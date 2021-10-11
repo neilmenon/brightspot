@@ -135,16 +135,53 @@ def logout():
    COMMENT ENDPOINTS
 '''
 
+def construct_replies(parent, c_replies):
+   replies = list(filter(lambda x: x['parent_id'] == parent['id'], c_replies))
+   if not len(replies):
+      return []
+   else:
+      for reply in replies:
+         print("Checking repliy with ID: {}".format(reply['id']))
+         reply['replies'] = construct_replies(reply, c_replies)
+      return replies
+
+
 @app.route("/api/comments", methods=['GET'])
 def comments():
    mdb = mariadb.connect(**(cfg['sql']))
    cursor = mdb.cursor(dictionary=True)
 
    # get all comments
-   cursor.execute("SELECT * FROM comments;")
+   cursor.execute("SELECT comments.*, users.name AS author_name, users.email AS author_email, users.profile_image FROM comments LEFT JOIN users ON comments.author_id = users.id;")
    result = list(cursor)
 
+   # get likes and dislikes for the comments
+   for comment in result:
+      cursor.execute("SELECT user_id, type, unix_timestamp FROM likes_dislikes WHERE comment_id = {};".format(comment['id']))
+      comment['likes_dislikes'] = list(cursor)
+
+   # format the comments list as a nested object for the frontend
+   c_final = []
+   c_parent = []
+   c_replies = []
    
+   # append all the parent comments and pop them
+   for comment in result:
+      if not comment['parent_id']:
+         c_parent.append(comment)
+      else:
+         c_replies.append(comment)
+
+   # recursively loop through rest of comments and assign parents
+   for parent in c_parent:
+      print("Checking parent comment with ID: {}".format(parent['id']))
+      parent['replies'] = construct_replies(parent, c_replies)
+      # replies = filter(lambda x: x['parent'] == parent['id'], c_replies)
+      # replies_final = []
+      # for reply in replies:
+      #    replies_final.append(construct_replies(reply, c_replies))
+      # parent['replies'] = replies_final
+      c_final.append(parent)
 
    mdb.close()
    return jsonify(result)
