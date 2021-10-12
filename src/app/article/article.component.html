@@ -1,0 +1,47 @@
+<div>
+    <h1>A Cool Article Title Which May Span Multiple Lines</h1>
+    <h2>Some subtitle text to be replaced with real text.</h2>
+    <div class="article-container">
+        <div class="author-container center">
+            <div>
+                <img id="face" src="/assets/img/me.jpg">
+            </div>
+            <div>
+                <div>
+                    <h3>Neil Menon</h3>
+                    <h4>@neilmenon</h4>
+                    <div class="article-icons">
+                        <a href="https://github.com/neilmenon" target="_blank" matTooltip="Visit Neil's profile on Github" matTooltipPosition="above"><i class="fab fa-github"></i></a>
+                        <a href="https://twitter.com/steelneil12" target="_blank" matTooltip="Visit Neil's profile on Twitter" matTooltipPosition="above"><i class="fab fa-twitter"></i></a>
+                        <a (click)="scrollToComments()" matTooltip="View comments ({{ totalComments }})" matTooltipPosition="above" class="clickable"><i class="fas fa-comments"></i></a>
+                    </div>
+                </div>
+                <hr style="width: 75%;">
+                <div>
+                    <span>
+                        <u>Posted</u>: October 7th, 2021 at 10:17am<br>
+                        <u>Tags</u>: <a href="#">brightspot</a>, <a href="#">cms</a>, <a href="#">best product</a>, <a href="#">better than wordpress</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="article-body">
+            <img src="/assets/img/coding.jpg">
+            <span class="credits">University of the Potomac</span>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Vestibulum viverra nulla vel est ornare</a>, sed consectetur dolor imperdiet. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur pellentesque, arcu eget vestibulum euismod, nulla risus dictum velit, eu eleifend sapien lacus sodales tellus. Cras at sapien lectus. <strong>Duis tempor rhoncus elit nec ullamcorper.</strong> Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut nec finibus velit. Praesent et neque urna. Duis elementum elit non venenatis ornare. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus dapibus justo rutrum tellus hendrerit, iaculis mattis nisl malesuada. Donec euismod, augue in dapibus ultrices, nibh odio ultricies leo, id finibus diam turpis et metus. Morbi sit amet metus varius, volutpat est at, dapibus nunc. Quisque ultricies tempor tempor.</p>
+            <p>Suspendisse purus erat, efficitur bibendum fringilla ac, maximus vel orci. Integer in gravida arcu. Phasellus placerat fermentum velit, sed finibus dolor dictum vitae. Aliquam erat volutpat. Aenean ut enim vel ex rutrum ullamcorper nec ac nulla. Nulla volutpat in metus at rutrum. Maecenas eu nisi ac augue consequat finibus. <a href="#">Ut mollis magna</a> et aliquet suscipit. Donec maximus, ex vitae commodo convallis, dui lacus bibendum libero, quis pellentesque sapien tellus facilisis velit. Sed felis tortor, ullamcorper sed hendrerit a, hendrerit in turpis. Sed tellus dui, pretium nec pulvinar in, mattis a mi. Fusce id elit ut ex pellentesque semper ac a orci.</p>  
+            <p>Aenean feugiat vehicula efficitur. Donec lectus erat, scelerisque eu elementum vitae, porta nec magna. Phasellus a blandit felis, quis scelerisque justo. Duis malesuada leo finibus faucibus pharetra. Mauris a lorem nibh. Proin luctus egestas sem, ac porta nibh lobortis vitae. <strong>Aliquam dignissim sapien at eros fringilla posuere.</strong> Quisque consectetur pharetra augue, non commodo <a href="#">felis mattis sollicitudin</a>. Nullam a enim et elit facilisis sodales. Donec gravida sem dignissim elit ultricies venenatis. Aenean in sapien vel dolor tempor facilisis eleifend vitae ante. Cras volutpat nisi scelerisque, laoreet urna accumsan, tincidunt tortor. Phasellus eget ante non nibh fermentum faucibus quis ut augue. Nullam molestie consectetur facilisis. Praesent commodo nisl at metus mollis egestas.</p>  
+            <p>Nullam vulputate odio vitae ligula hendrerit pharetra. Phasellus nec erat eu ante ullamcorper pretium. Integer a ligula volutpat, facilisis sem a, malesuada felis. Maecenas pulvinar ut ante vel consequat. Quisque felis mauris, porttitor vel nulla quis, viverra lacinia elit. Nullam quis ante rhoncus, ultrices diam posuere, elementum tellus. Proin eget nunc egestas, vulputate orci nec, pellentesque urna. Vivamus laoreet leo sed dui gravida commodo. Suspendisse et porttitor enim. Nulla facilisi. <strong>Maecenas massa felis, accumsan id tempus a, tincidunt convallis nisi.</strong> Fusce nibh augue, ultricies id malesuada eget, molestie et nunc. Aenean lacinia nibh eget nunc sodales sollicitudin. Suspendisse potenti. Donec vulputate diam vitae sapien efficitur convallis.</p>
+            <p>Sed sed magna in libero imperdiet ornare. Fusce at vulputate ligula. Donec a velit dignissim, venenatis magna nec, varius tortor. In non libero in leo bibendum sollicitudin sed in magna. Sed leo nunc, sollicitudin et consequat ut, iaculis ac velit. Praesent laoreet turpis libero, sit amet accumsan nibh accumsan sed. Maecenas consectetur euismod lacus sed dictum. <a href="#">Vivamus elementum nisl vel faucibus ullamcorper</a>. Sed a sem vel odio ullamcorper fringilla cursus vulputate tellus. Mauris consequat nisi eget magna ultricies faucibus. Curabitur consequat iaculis egestas. Nunc ut pretium ante.</p>
+        </div>
+    </div>
+    <div id="commentsSection">
+        <h2 style="color: #000; margin: 0;">Discussion</h2>
+        <a matTooltip="{{ totalComments | pluralize:'comment' }}" matTooltipPosition="above" style="font-size: 1.8rem; padding-top: 0.1rem;"><i class="fas fa-comments"></i> {{ totalComments }}</a>
+    </div>
+    <hr>
+    <app-comment-form [user]="user"></app-comment-form>
+    <div>
+        <app-comment [user]="user" [comments]="comments" [replyLevel]="0"></app-comment>
+    </div>
+</div>

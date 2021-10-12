@@ -1,0 +1,33 @@
+<div class="comment-container" *ngIf="comments.length">
+    <div *ngFor="let comment of comments; last as lastChild" class="comment">
+        <div class="author-image" [class.reply-border]="replyLevel > 0">
+            <img src="{{ comment.profile_image }}">
+        </div>
+        <div class="comment-main" >
+            <div>
+                <strong>{{ comment.author_name }}</strong> • 
+                <span style="color: #767676;" [matTooltip]="moment.unix(comment.unix_timestamp).format('LLLL')" matTooltipPosition="above">{{ moment.unix(comment.unix_timestamp).fromNow() }}</span>
+            </div>
+            <div class="comment-body">
+                {{ comment.body }}
+            </div>
+            <div class="comment-actions">
+                <a class="clickable" (click)="null" *ngIf="comment.author_id == user?.id">Delete</a>
+                <a class="clickable" (click)="comment.showReplyForm = !comment.showReplyForm">Reply</a>
+                <span class="clickable" [matTooltip]="userReacted(comment, 'like') ? 'Remove Reaction' : 'Like'" matTooltipPosition="above" [class.disable-click]="!user">
+                    <i [ngClass]="userReacted(comment, 'like') ? 'fas fa-thumbs-up reacted' : 'far fa-thumbs-up'"></i> {{ getNumReactions(comment, "like") }}
+                </span>
+                <span class="clickable" [matTooltip]="userReacted(comment, 'dislike') ? 'Remove Reaction' : 'Dislike'" matTooltipPosition="above" [class.disable-click]="!user">
+                    <i [ngClass]="userReacted(comment, 'dislike') ? 'fas fa-thumbs-down reacted' : 'far fa-thumbs-down'"></i> {{ getNumReactions(comment, "dislike") }}
+                </span>
+                <div style="margin-top: 0.5rem;" *ngIf="comment.showReplyForm">
+                    <app-comment-form [user]="user" [comment]="comment"></app-comment-form>
+                </div>
+            </div>
+            <div class="comment-replies">
+                <app-comment [user]="user" [comments]="comment.replies" [replyLevel]="replyLevel + 1"></app-comment>
+            </div>
+        </div>
+        <hr *ngIf="!lastChild">
+    </div>
+</div>

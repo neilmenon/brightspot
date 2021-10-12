@@ -1,0 +1,42 @@
+.comment-container {
+    padding-top: 1rem;
+}
+.author-image {
+    min-width: 60px;
+    text-align: center;
+}
+.author-image img {
+    max-width: 50px;
+    border-radius: 50%;
+}
+.comment-body {
+    padding-top: 0.25rem;
+}
+.comment-main {
+    padding-left: 0.5rem;
+    width: 100%;
+}
+.comment {
+    display: flex;
+    margin-bottom: 1rem;
+    position: relative;
+    padding: 0.5rem 0;
+}
+.comment hr {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -13px;
+}
+.comment-actions {
+    padding-top: 0.5rem;
+}
+.comment-actions > * {
+    padding-right: 1rem;
+}
+.reply-border {
+    border-left: 0.5px solid #bfbfbf;
+}
+.reacted {
+    color: lightseagreen;
+}

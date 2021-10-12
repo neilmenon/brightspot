@@ -48,7 +48,7 @@ CREATE TABLE `likes_dislikes` (
   `comment_id` int(11) NOT NULL,
   `type` text NOT NULL,
   `unix_timestamp` text NOT NULL,
-  PRIMARY KEY (`user_id`,`comment_id`,`type`(191)) USING BTREE,
+  PRIMARY KEY (`user_id`,`comment_id`) USING BTREE,
   KEY `fk_comment` (`comment_id`),
   CONSTRAINT `fk_comment` FOREIGN KEY (`comment_id`) REFERENCES `comments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -68,7 +68,8 @@ CREATE TABLE `users` (
   `email` text NOT NULL,
   `profile_image` text NOT NULL,
   `google_id` text NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

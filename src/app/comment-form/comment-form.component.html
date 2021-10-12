@@ -1,0 +1,28 @@
+<form [formGroup]="commentForm">
+    <mat-form-field appearance="fill" class="full-width" [class.disable-click]="!user">
+        <mat-label>Comment</mat-label>
+        <textarea 
+            matInput 
+            formControlName="body" 
+            name="body" 
+            id="body" 
+            cdkTextareaAutosize 
+            cdkAutosizeMinRows="4"
+            placeholder="What do you think? Be creative."
+        ></textarea>
+      </mat-form-field>
+    <div class="actions">
+        <div *ngIf="user">Commenting as {{ user?.name }} ({{ user?.email }}). <a href="#">Not you?</a></div>
+        <div *ngIf="!user"><strong>Please sign in to comment.</strong></div>
+        <div style="display: flex;" [matTooltip]="!user ? 'Please sign in to comment.' : null" matTooltipPosition="above">
+            <button mat-raised-button color="warn" *ngIf="!user">Sign In</button>
+            <button 
+                mat-raised-button color="primary" 
+                [class.disable-click]="!user || !commentForm.controls['body'].value?.trim().length || submitting"
+                (click)="submitComment()"
+            >
+                {{ submitting ? 'Submitting...' : 'Submit' }}
+            </button>
+        </div>
+    </div>
+</form>

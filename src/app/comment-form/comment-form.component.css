@@ -1,0 +1,8 @@
+.actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -0.5rem;
+}
+.actions button:not(:last-child) {
+    margin-right: 0.5rem
+}
