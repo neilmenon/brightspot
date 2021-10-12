@@ -139,7 +139,10 @@ def logout():
 
 @app.route("/api/user", methods=['GET'])
 def get_user():
-   return jsonify(current_user) if current_user.is_authenticated else jsonify(None)
+   if current_user.is_authenticated:
+      data = { "id": current_user.id, "name": current_user.name, "email": current_user.email, "profile_image": current_user.profile_image }
+      return jsonify(data)
+   return jsonify(None)
    # return jsonify(User.get_dict(1))
 
 '''
