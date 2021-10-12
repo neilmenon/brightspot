@@ -1,8 +1,26 @@
 from flask_login import UserMixin
 from api import sql_helper
+from api import api_logger as logger
 import mariadb
 import api.config as config
 cfg = config.config
+
+def execute_db(sql, commit=False):
+   mdb = mariadb.connect(**(cfg['sql']))
+   cursor = mdb.cursor(dictionary=True)
+
+   try:
+      logger.log("Executing SQL: {}".format(sql))
+      cursor.execute(sql)
+      records = [] if commit else list(cursor)
+      if commit:
+         mdb.commit()
+   except mariadb.Error as e:
+      mdb.close()
+      logger.log("A database error occured: {}".format(e))
+
+   mdb.close()
+   return records
 
 class User(UserMixin):
     def __init__(self, id_, name, email, profile_image):
@@ -13,11 +31,7 @@ class User(UserMixin):
 
     @staticmethod
     def get(user_id):
-        mdb = mariadb.connect(**(cfg['sql']))
-        cursor = mdb.cursor(dictionary=True)
-        cursor.execute("SELECT * from users WHERE google_id = {}".format(user_id))
-        result = list(cursor)
-        mdb.close()
+        result = execute_db("SELECT * from users WHERE google_id = {}".format(user_id))
         if not result:
             return None
 
@@ -25,11 +39,7 @@ class User(UserMixin):
 
     @staticmethod
     def get_dict(user_id):
-        mdb = mariadb.connect(**(cfg['sql']))
-        cursor = mdb.cursor(dictionary=True)
-        cursor.execute("SELECT * from users WHERE id = {}".format(user_id))
-        result = list(cursor)
-        mdb.close()
+        result = execute_db("SELECT * from users WHERE id = {}".format(user_id))
         if not result:
             return None
 
@@ -39,13 +49,7 @@ class User(UserMixin):
 
     @staticmethod
     def create(id_, name, email, profile_image):
-        mdb = mariadb.connect(**(cfg['sql']))
-        cursor = mdb.cursor(dictionary=True)
         data = { "google_id": id_, "name": name, "email": email, "profile_image": profile_image }
-        print(sql_helper.insert_into("users", data))
-        cursor.execute(sql_helper.insert_into("users", data))
-        mdb.commit()
-        mdb.close()
-
+        execute_db(sql_helper.insert_into("users", data), commit=True)
 
 

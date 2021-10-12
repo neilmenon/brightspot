@@ -21,6 +21,8 @@ import requests
 import api.config as config
 cfg = config.config
 
+import api.api_logger as logger
+
 import api.sql_helper as sql_helper
 
 app = Flask(__name__)
@@ -38,7 +40,7 @@ def execute_db(sql, commit=False):
    cursor = mdb.cursor(dictionary=True)
 
    try:
-      print("Executing SQL: {}".format(sql))
+      logger.log("Executing SQL: {}".format(sql))
       cursor.execute(sql)
       records = [] if commit else list(cursor)
       if commit:

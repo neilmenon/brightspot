@@ -1,0 +1,5 @@
+# backend brightspot
+alias brightspot-b="cd /root/projects/brightspot && git pull && service brightspot restart"
+
+# full brightspot
+alias brightspot="swapon /swapfile && cd /root/projects/brightspot && git pull && npm i && ng build --prod && \cp -a /root/projects/brightspot/dist/brightspot/. /usr/share/nginx/brightspot/ ; service brightspot restart ; echo 'Disabling swap...' ; swapoff -a"
