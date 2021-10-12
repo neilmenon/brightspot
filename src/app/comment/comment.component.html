@@ -1,5 +1,8 @@
+<div class="comment-container center no-comments" *ngIf="comments.length == 0 && replyLevel == 0">
+    There are no comments. Want to be the first?
+</div>
 <div class="comment-container" *ngIf="comments.length">
-    <div *ngFor="let comment of comments; last as lastChild" class="comment" [class.overflow-hide]="replyLevel == 0">
+    <div *ngFor="let comment of comments; last as lastChild" class="comment" [class.overflow-hide]="replyLevel == 0" [class.disable-click]="deletingComment?.id == comment.id">
         <div class="author-image" [class.reply-border]="replyLevel > 0">
             <img src="{{ comment.profile_image }}">
         </div>
@@ -12,12 +15,24 @@
                 {{ comment.body }}
             </div>
             <div class="comment-actions">
-                <a class="clickable" (click)="null" *ngIf="comment.author_id == user?.id">Delete</a>
+                <a class="clickable" (click)="null" *ngIf="comment.author_id == user?.id" (click)="deleteComment(comment)">Delete</a>
                 <a class="clickable" (click)="comment.showReplyForm = !comment.showReplyForm">Reply</a>
-                <span class="clickable" [matTooltip]="userReacted(comment, 'like') ? 'Remove Reaction' : 'Like'" matTooltipPosition="above" [class.disable-click]="!user">
+                <span 
+                    class="clickable" 
+                    [matTooltip]="userReacted(comment, 'like') ? 'Remove Reaction' : 'Like'" 
+                    matTooltipPosition="above" 
+                    [class.disable-click]="!user || submittingReaction?.id == comment.id"
+                    (click)="submitReaction(comment, userReacted(comment, 'like') ? 'remove' : 'like')"
+                >
                     <i [ngClass]="userReacted(comment, 'like') ? 'fas fa-thumbs-up reacted' : 'far fa-thumbs-up'"></i> {{ getNumReactions(comment, "like") }}
                 </span>
-                <span class="clickable" [matTooltip]="userReacted(comment, 'dislike') ? 'Remove Reaction' : 'Dislike'" matTooltipPosition="above" [class.disable-click]="!user">
+                <span 
+                    class="clickable" 
+                    [matTooltip]="userReacted(comment, 'dislike') ? 'Remove Reaction' : 'Dislike'" 
+                    matTooltipPosition="above" 
+                    [class.disable-click]="!user || submittingReaction?.id == comment.id"
+                    (click)="submitReaction(comment, userReacted(comment, 'dislike') ? 'remove' : 'dislike')"
+                >
                     <i [ngClass]="userReacted(comment, 'dislike') ? 'fas fa-thumbs-down reacted' : 'far fa-thumbs-down'"></i> {{ getNumReactions(comment, "dislike") }}
                 </span>
                 <div style="margin-top: 0.5rem;" *ngIf="comment.showReplyForm">

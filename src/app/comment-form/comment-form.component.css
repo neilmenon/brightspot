@@ -6,3 +6,9 @@
 .actions button:not(:last-child) {
     margin-right: 0.5rem
 }
+.submit-spinner {
+    display: inline-block;
+    margin-left: 3px;
+    margin-top: -4px;
+    margin-right: -7px;
+}

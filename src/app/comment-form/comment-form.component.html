@@ -15,13 +15,14 @@
         <div *ngIf="user">Commenting as {{ user?.name }} ({{ user?.email }}). <a href="#">Not you?</a></div>
         <div *ngIf="!user"><strong>Please sign in to comment.</strong></div>
         <div style="display: flex;" [matTooltip]="!user ? 'Please sign in to comment.' : null" matTooltipPosition="above">
-            <button mat-raised-button color="warn" *ngIf="!user">Sign In</button>
+            <button mat-raised-button color="warn" *ngIf="!user" (click)="signIn()">Sign In</button>
             <button 
                 mat-raised-button color="primary" 
                 [class.disable-click]="!user || !commentForm.controls['body'].value?.trim().length || submitting"
                 (click)="submitComment()"
             >
                 {{ submitting ? 'Submitting...' : 'Submit' }}
+                <mat-spinner diameter="17" color="accent" class="submit-spinner" *ngIf="submitting"></mat-spinner>
             </button>
         </div>
     </div>

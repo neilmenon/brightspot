@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BackendService } from '../backend.service';
+import { config } from '../config';
 import { MessageService } from '../message.service';
 import { CommentModel } from '../models/commentModel';
 import { UserModel } from '../models/userModel';
@@ -44,6 +45,10 @@ export class CommentFormComponent implements OnInit {
       this.submitting = false
       this.messageService.open("There was an error submitted your comment. Please try again.")
     })
+  }
+
+  signIn() {
+    window.location.href = config.api_root + '/login'
   }
 
 }

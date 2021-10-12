@@ -29,6 +29,17 @@ export class BackendService {
     })
   }
 
+  deleteComment(commentId: number) {
+    return this.http.delete(config.api_root + `/comment/${commentId}/delete`)
+  }
+
+  submitReaction(commentId: number, userId: number, type: string) {
+    return this.http.post(config.api_root + `/comment/${commentId}/react`, {
+      "user_id": userId,
+      "type": type
+    })
+  }
+
   fireRefetchComments() {
     this.refetchComments.next()
   }

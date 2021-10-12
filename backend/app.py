@@ -58,16 +58,9 @@ def load_user(user_id):
 def index():
    # return flask.jsonify(current_user)
    if current_user.is_authenticated:
-      return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/api/logout">Logout</a>'.format(
-                current_user.name, current_user.email, current_user.profile_image
-         )
-      )
+      return jsonify({"data": "Signed in"})
    else:
-      return '<a class="button" href="/api/login">Google Login</a>'
+      return jsonify({"data": "Guest"})
 
 '''
    GOOGLE LOGIN ENDPOINTS
@@ -114,16 +107,10 @@ def callback():
    # Parse the tokens
    client.parse_request_body_response(json.dumps(token_response.json()))
 
-   # Now that you have tokens (yay) let's find and hit the URL
-   # from Google that gives you the user's profile information,
-   # including their Google profile image and email
    userinfo_endpoint = google_cfg["userinfo_endpoint"]
    uri, headers, body = client.add_token(userinfo_endpoint)
    userinfo_response = requests.get(uri, headers=headers, data=body)
 
-   # You want to make sure their email is verified.
-   # The user authenticated with Google, authorized your
-   # app, and now you've verified their email through Google!
    if userinfo_response.json().get("email_verified"):
       unique_id = userinfo_response.json()["sub"]
       users_email = userinfo_response.json()["email"]
@@ -132,15 +119,11 @@ def callback():
    else:
       return "User email not available or not verified by Google.", 400
 
-   # Create a user in your db with the information provided
-   # by Google
    user = User(id_=unique_id, name=users_name, email=users_email, profile_image=picture)
 
-   # Doesn't exist? Add it to the database.
    if not User.get(unique_id):
       User.create(unique_id, users_name, users_email, picture)
 
-   # Begin user session by logging the user in
    login_user(user)
 
    # Send user back to homepage
@@ -154,8 +137,8 @@ def logout():
 
 @app.route("/api/user", methods=['GET'])
 def get_user():
-   # return jsonify(current_user) if current_user.is_authenticated else jsonify({})
-   return jsonify(User.get_dict(1))
+   return jsonify(current_user) if current_user.is_authenticated else jsonify(None)
+   # return jsonify(User.get_dict(1))
 
 '''
    COMMENT ENDPOINTS
@@ -202,8 +185,8 @@ def comments():
 
 @app.route("/api/comment", methods=['POST', 'PUT'])
 def create_comment():
-   # if not current_user.is_authenticated:
-   #    abort(401)
+   if not current_user.is_authenticated:
+      abort(401)
 
    params = request.get_json()
    try:
@@ -215,7 +198,7 @@ def create_comment():
       abort(make_response(jsonify(error="Missing required parameter: " + str(e.args[0]) + "."), 400))
    
    unix_timestamp = str(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()))
-   data = { "id": id, "author_id": author_id, "body": body, "unix_timestamp": unix_timestamp, "parent_id": parent_id }
+   data = { "id": id, "author_id": author_id, "body": sql_helper.esc_db(body), "unix_timestamp": unix_timestamp, "parent_id": parent_id }
    if not parent_id:
       data.pop("parent_id")
    if not id: # CREATE mode
@@ -230,8 +213,8 @@ def create_comment():
 
 @app.route("/api/comment/<int:comment_id>/delete", methods=['DELETE'])
 def delete_comment(comment_id):
-   # if not current_user.is_authenticated:
-   #    abort(401)
+   if not current_user.is_authenticated:
+      abort(401)
 
    # delete the comment itself | foreign keys should cascade all replies
    execute_db("DELETE FROM comments WHERE id = {};".format(comment_id), commit=True)
@@ -239,8 +222,8 @@ def delete_comment(comment_id):
 
 @app.route("/api/comment/<int:comment_id>/react", methods=['POST', 'PUT'])
 def react(comment_id):
-   # if not current_user.is_authenticated:
-   #    abort(401)
+   if not current_user.is_authenticated:
+      abort(401)
    
    params = request.get_json()
    try:
@@ -252,8 +235,9 @@ def react(comment_id):
    if type != "like" and type != "dislike" and type != "remove":
       abort(make_response(jsonify(error="Invalid reaction type. Must be 'like' or 'dislike'"), 400))
 
+   # remove any existing reactions for this comment and user
+   execute_db("DELETE FROM likes_dislikes WHERE user_id = {} AND comment_id = {}".format(user_id, comment_id), commit=True)
    if type == "remove":
-      execute_db("DELETE FROM likes_dislikes WHERE user_id = {} AND comment_id = {}".format(user_id, comment_id), commit=True)
       return jsonify(True)
 
    data = { "user_id": user_id, "comment_id": comment_id, "type": type, "unix_timestamp": str(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())) }

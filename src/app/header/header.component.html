@@ -1,26 +1,35 @@
 <mat-toolbar color="primary">
     <mat-toolbar-row>
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+        <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
             <mat-icon>menu</mat-icon>
-        </button>
-        <span>My App</span>
+        </button> -->
+        <span>
+            <button mat-raised-button style="background-color: #000; color: #958f8f; padding-right: 4.6rem;">
+                <img src="https://docs.brightspot.com/4.2/css/image/corporate-logo.png" style="max-width: 150px;">
+                <span style="position: absolute; font-size: 20px; right: 11px;">DEMO</span>
+            </button>
+        </span>
         <span class="spacer"></span>
-        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-            <mat-icon>favorite</mat-icon>
-        </button>
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-            <mat-icon>share</mat-icon>
-        </button>
+        <div *ngIf="user; else guest">
+            <img 
+                src="{{ user.profile_image }}" 
+                class="header-image clickable"
+                matTooltip="Signed in as {{ user.name }} (Click to sign out)"
+                matTooltipPosition="left"
+                (click)="signOut()"
+            >
+        </div>
+        <ng-template #guest>
+            <button mat-raised-button color="warn" (click)="signIn()">Sign In</button>
+        </ng-template>
     </mat-toolbar-row>
 
-    <mat-toolbar-row class="accent">
-        <span>Second Line</span>
+    <mat-toolbar-row class="accent" id="category">
+        <button mat-raised-button class="accent">Category 1</button>
+        <button mat-raised-button class="accent">Category 2</button>
         <span class="spacer"></span>
-        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-          <mat-icon>favorite</mat-icon>
-        </button>
         <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-          <mat-icon>share</mat-icon>
+            <mat-icon>share</mat-icon>
         </button>
     </mat-toolbar-row>
 </mat-toolbar>

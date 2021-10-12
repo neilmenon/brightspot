@@ -44,3 +44,7 @@
     overflow-x: auto;
     overflow-y: hidden;
 }
+.no-comments {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}

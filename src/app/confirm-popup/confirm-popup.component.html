@@ -1,8 +1,7 @@
 <div class="center" style="margin-bottom: -16px;">
     <h3 mat-dialog-title>{{ data?.title }}</h3>
 </div>
-<div mat-dialog-content>
-    {{ data?.message }}
+<div mat-dialog-content [innerHTML]="data?.message" class="center">
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="cancel()">
