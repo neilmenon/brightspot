@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { BackendService } from '../backend.service';
 import { config } from '../config';
+import { ConfirmPopupComponent } from '../confirm-popup/confirm-popup.component';
 import { MessageService } from '../message.service';
 import { CommentModel } from '../models/commentModel';
 import { UserModel } from '../models/userModel';
@@ -20,7 +22,8 @@ export class CommentFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private backendService: BackendService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -49,6 +52,22 @@ export class CommentFormComponent implements OnInit {
 
   signIn() {
     window.location.href = config.api_root + '/login'
+  }
+
+  signOut() {
+    const dialogRef = this.dialog.open(ConfirmPopupComponent, {
+      data: { 
+        title: "Sign Out",
+        message: `Are you sure you want to sign out?<br>(Signed in as ${this.user.email}).`,
+        primaryButton: "Confirm"
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        window.location.href = config.api_root + '/logout'
+      }
+    })
   }
 
 }

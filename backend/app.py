@@ -139,11 +139,13 @@ def logout():
 
 @app.route("/api/user", methods=['GET'])
 def get_user():
-   if current_user.is_authenticated:
-      data = { "id": current_user.id, "name": current_user.name, "email": current_user.email, "profile_image": current_user.profile_image }
-      return jsonify(data)
-   return jsonify(None)
-   # return jsonify(User.get_dict(1))
+   if cfg['server']:
+      if current_user.is_authenticated:
+         data = { "id": current_user.id, "name": current_user.name, "email": current_user.email, "profile_image": current_user.profile_image }
+         return jsonify(data)
+      return jsonify(None)
+   else:
+      return jsonify(User.get_dict(1))
 
 '''
    COMMENT ENDPOINTS
@@ -190,7 +192,7 @@ def comments():
 
 @app.route("/api/comment", methods=['POST', 'PUT'])
 def create_comment():
-   if not current_user.is_authenticated:
+   if not current_user.is_authenticated and cfg['server']:
       abort(401)
 
    params = request.get_json()
@@ -218,7 +220,7 @@ def create_comment():
 
 @app.route("/api/comment/<int:comment_id>/delete", methods=['DELETE'])
 def delete_comment(comment_id):
-   if not current_user.is_authenticated:
+   if not current_user.is_authenticated and cfg['server']:
       abort(401)
 
    # delete the comment itself | foreign keys should cascade all replies
@@ -227,7 +229,7 @@ def delete_comment(comment_id):
 
 @app.route("/api/comment/<int:comment_id>/react", methods=['POST', 'PUT'])
 def react(comment_id):
-   if not current_user.is_authenticated:
+   if not current_user.is_authenticated and cfg['server']:
       abort(401)
    
    params = request.get_json()

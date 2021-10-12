@@ -12,7 +12,7 @@
         ></textarea>
       </mat-form-field>
     <div class="actions">
-        <div *ngIf="user">Commenting as {{ user?.name }} ({{ user?.email }}). <a href="#">Not you?</a></div>
+        <div *ngIf="user">Commenting as {{ user?.name }} ({{ user?.email }}). <a class="clickable" (click)="signOut()">Not you?</a></div>
         <div *ngIf="!user"><strong>Please sign in to comment.</strong></div>
         <div style="display: flex;" [matTooltip]="!user ? 'Please sign in to comment.' : null" matTooltipPosition="above">
             <button mat-raised-button color="warn" *ngIf="!user" (click)="signIn()">Sign In</button>
