@@ -20,13 +20,13 @@
     display: flex;
     margin-bottom: 1rem;
     position: relative;
-    padding: 0.5rem 0;
+    padding-bottom: 0.7rem;
 }
 .comment hr {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -13px;
+    bottom: -7px;
 }
 .comment-actions {
     padding-top: 0.5rem;
@@ -39,4 +39,8 @@
 }
 .reacted {
     color: lightseagreen;
+}
+.overflow-hide {
+    overflow-x: auto;
+    overflow-y: hidden;
 }

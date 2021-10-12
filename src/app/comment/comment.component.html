@@ -1,5 +1,5 @@
 <div class="comment-container" *ngIf="comments.length">
-    <div *ngFor="let comment of comments; last as lastChild" class="comment">
+    <div *ngFor="let comment of comments; last as lastChild" class="comment" [class.overflow-hide]="replyLevel == 0">
         <div class="author-image" [class.reply-border]="replyLevel > 0">
             <img src="{{ comment.profile_image }}">
         </div>
