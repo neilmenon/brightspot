@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance of the Flask server for brightspot
+After=network.target
+
+[Service]
+User=root
+Group=nginx
+WorkingDirectory=/root/projects/brightspot/backend
+Environment="PATH=/root/projects/brightspot/backend/env/bin"
+ExecStart=/root/projects/brightspot/backend/env/bin/uwsgi --ini app.ini --enable-threads
+
+[Install]
+WantedBy=multi-user.target
