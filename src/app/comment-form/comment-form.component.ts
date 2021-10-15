@@ -16,6 +16,7 @@ import { UserModel } from '../models/userModel';
 export class CommentFormComponent implements OnInit {
   @Input() user: UserModel
   @Input() comment: CommentModel = new CommentModel()
+  @Input() isReply: boolean
 
   submitting: boolean = false
   commentForm: FormGroup
@@ -30,23 +31,28 @@ export class CommentFormComponent implements OnInit {
     this.commentForm = this.fb.group({
       body: [null]
     })
+
+    if (!this.isReply) {
+      this.commentForm.controls['body'].patchValue(this.comment.body)
+    }
   }
 
   submitComment() {
     this.submitting = true
     this.backendService.submitComment(
-      null,
+      this.isReply ? null : this.comment.id,
       this.user.id,
       this.commentForm.controls['body'].value.trim(),
-      this.comment.id
+      this.isReply ? this.comment.id : this.comment.parent_id
     ).toPromise().then((data: any) => {
       this.backendService.fireRefetchComments()
       this.submitting = false
-      this.messageService.open("Successfully submitted comment.")
+      let submitType: string = this.comment.id && !this.isReply ? 'updated' : 'submitted'
+      this.messageService.open(`Successfully ${submitType} comment.`)
       this.commentForm.reset()
     }).catch(error => {
       this.submitting = false
-      this.messageService.open("There was an error submitted your comment. Please try again.")
+      this.messageService.open("There was an error submitting your comment. Please try again.")
     })
   }
 

@@ -10,6 +10,7 @@ export class CommentModel {
     replies: Array<CommentModel>
     unix_timestamp: string
     showReplyForm: boolean
+    showUpdateForm: boolean
 
     constructor() {
         this.author_email = null
@@ -23,6 +24,7 @@ export class CommentModel {
         this.replies = []
         this.unix_timestamp = null
         this.showReplyForm = null
+        this.showUpdateForm = null
     }
 }
 

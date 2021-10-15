@@ -139,24 +139,27 @@ def logout():
 
 @app.route("/api/user", methods=['GET'])
 def get_user():
-   if cfg['server']:
+   if cfg['server']: # if running on server, Google login is working (because we have HTTPS!)
       if current_user.is_authenticated:
          data = { "id": current_user.id, "name": current_user.name, "email": current_user.email, "profile_image": current_user.profile_image }
          return jsonify(data)
       return jsonify(None)
-   else:
+   else: # just return the first user in the table if in DEV / local
       return jsonify(User.get_dict(1))
 
 '''
    COMMENT ENDPOINTS
 '''
 
+# recursive function to build the comments DTO to send to the frontend
 def construct_replies(parent, c_replies):
+   # find all replies of the current parent
    replies = list(filter(lambda x: x['parent_id'] == parent['id'], c_replies))
    if not len(replies):
       return []
    else:
       for reply in replies:
+         # recurse down into each reply of this parent to see if it in turn has any replies
          reply['replies'] = construct_replies(reply, c_replies)
       return replies
 
@@ -166,6 +169,7 @@ def comments():
    # get all comments
    result = execute_db("SELECT comments.*, users.name AS author_name, users.email AS author_email, users.profile_image FROM comments LEFT JOIN users ON comments.author_id = users.id ORDER BY unix_timestamp DESC;")
    total_comments = len(result)
+   
    # get likes and dislikes for the comments
    for comment in result:
       reactions = execute_db("SELECT user_id, type, unix_timestamp FROM likes_dislikes WHERE comment_id = {};".format(comment['id']))
@@ -200,11 +204,13 @@ def create_comment():
       id = params['id'] # if null, then CREATE, if not null then UPDATE
       author_id = params['author_id']
       body = params['body']
-      parent_id = params['parent_id']
+      parent_id = params['parent_id'] # null if no parent
    except KeyError as e:
       abort(make_response(jsonify(error="Missing required parameter: " + str(e.args[0]) + "."), 400))
    
    unix_timestamp = str(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp()))
+
+   # build DTO to insert into DB
    data = { "id": id, "author_id": author_id, "body": sql_helper.esc_db(body), "unix_timestamp": unix_timestamp, "parent_id": parent_id }
    if not parent_id:
       data.pop("parent_id")
@@ -247,6 +253,7 @@ def react(comment_id):
    if type == "remove":
       return jsonify(True)
 
+   # insert new reaction into db
    data = { "user_id": user_id, "comment_id": comment_id, "type": type, "unix_timestamp": str(int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp())) }
    execute_db(sql_helper.insert_into("likes_dislikes", data), commit=True)
    return jsonify(data)

@@ -40,7 +40,7 @@
         <a matTooltip="{{ totalComments | pluralize:'comment' }}" matTooltipPosition="above" style="font-size: 1.8rem; padding-top: 0.1rem;"><i class="fas fa-comments"></i> {{ totalComments }}</a>
     </div>
     <hr>
-    <app-comment-form [user]="user"></app-comment-form>
+    <app-comment-form [user]="user" [isReply]="false"></app-comment-form>
     <div>
         <app-comment [user]="user" [comments]="comments" [replyLevel]="0"></app-comment>
     </div>

@@ -21,7 +21,7 @@
                 [class.disable-click]="!user || !commentForm.controls['body'].value?.trim().length || submitting"
                 (click)="submitComment()"
             >
-                {{ submitting ? 'Submitting...' : 'Submit' }}
+                {{ submitting ? 'Submitting...' : (comment.id && !isReply ? 'Update' : 'Submit') }}
                 <mat-spinner diameter="17" color="accent" class="submit-spinner" *ngIf="submitting"></mat-spinner>
             </button>
         </div>

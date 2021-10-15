@@ -12,9 +12,11 @@
                 <span style="color: #767676;" [matTooltip]="moment.unix(comment.unix_timestamp).format('LLLL')" matTooltipPosition="above">{{ moment.unix(comment.unix_timestamp).fromNow() }}</span>
             </div>
             <div class="comment-body">
-                {{ comment.body }}
+                <span *ngIf="!comment.showUpdateForm">{{ comment.body }}</span>
+                <app-comment-form [user]="user" [comment]="comment" [isReply]="false" *ngIf="comment.showUpdateForm"></app-comment-form>
             </div>
             <div class="comment-actions">
+                <a class="clickable" (click)="null" *ngIf="comment.author_id == user?.id" (click)="comment.showUpdateForm = !comment.showUpdateForm">{{ comment.showUpdateForm ? 'Cancel Edit' : 'Edit'  }}</a>
                 <a class="clickable" (click)="null" *ngIf="comment.author_id == user?.id" (click)="deleteComment(comment)">Delete</a>
                 <a class="clickable" (click)="comment.showReplyForm = !comment.showReplyForm">Reply</a>
                 <span 
@@ -36,7 +38,7 @@
                     <i [ngClass]="userReacted(comment, 'dislike') ? 'fas fa-thumbs-down reacted' : 'far fa-thumbs-down'"></i> {{ getNumReactions(comment, "dislike") }}
                 </span>
                 <div style="margin-top: 0.5rem;" *ngIf="comment.showReplyForm">
-                    <app-comment-form [user]="user" [comment]="comment"></app-comment-form>
+                    <app-comment-form [user]="user" [comment]="comment" [isReply]="true"></app-comment-form>
                 </div>
             </div>
             <div class="comment-replies">
